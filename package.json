@@ -26,7 +26,37 @@
           "description": "Show debug messages"
         }
       }
-    }
+    },
+    "commands": [
+      {
+        "command": "countDownBlocking",
+        "title": "Count down 10 seconds [Blocking]"
+      },
+      {
+        "command": "countDownNonBlocking",
+        "title": "Count down 10 seconds [Non Blocking]"
+      },
+      {
+        "command": "registerCompletions",
+        "title": "Register completions"
+      },
+      {
+        "command": "showConfigurationAsync",
+        "title": "Show Json Example Configuration [Async]"
+      },
+      {
+        "command": "showConfigurationCallback",
+        "title": "Show Json Example Configuration [Callback]"
+      },
+      {
+        "command": "showConfigurationThread",
+        "title": "Show Json Example Configuration [Thread]"
+      },
+      {
+        "command": "unregisterCompletions",
+        "title": "Unregister completions"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
@@ -49,5 +79,7 @@
     "typescript": "^4.0.2",
     "vscode-test": "^1.4.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "vscode-languageclient": "^6.1.3"
+  }
 }

@@ -36,6 +36,47 @@
 				"${workspaceFolder}/out/test/**/*.js"
 			],
 			"preLaunchTask": "${defaultBuildTask}"
+		},
+		{
+			"name": "Launch Client",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"sourceMaps": true,
+			"args": [
+				"--extensionDevelopmentPath=${workspaceRoot}"
+			],
+			"outFiles": [
+				"${workspaceRoot}/out/**/*.js"
+			],
+			"preLaunchTask": "compile:client",
+			"env": {
+				"VSCODE_DEBUG_MODE": "true"
+			}
+		},
+		{
+			"name": "Launch Server",
+			"type": "python",
+			"request": "launch",
+			"module": "server",
+			"args": [
+				"--tcp"
+			],
+			"justMyCode": false,
+			"pythonPath": "/Users/farisansari/.pyenv/versions/3.7.7/bin/python",
+			"cwd": "${workspaceFolder}",
+			"env": {
+				"PYTHONPATH": "${workspaceFolder}"
+			}
+		}
+	],
+	"compounds": [
+		{
+			"name": "Server + Client",
+			"configurations": [
+				"Launch Server",
+				"Launch Client"
+			]
 		}
 	]
 }

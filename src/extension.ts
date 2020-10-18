@@ -1,37 +1,85 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from "vscode";
-import { setupDiagnostics } from "./diagnostics";
-import { debugMsg, getDocTypeJSON, findFrappeBenchDir } from "./utils";
-import { setupAutocomplete } from "./autocomplete";
-import { setupHover } from "./hover";
-import { setupDefinition } from "./definition";
+import * as net from "net";
+import * as path from "path";
+import { ExtensionContext, workspace } from "vscode";
+import {
+  LanguageClient,
+  LanguageClientOptions,
+  ServerOptions,
+} from "vscode-languageclient";
 
-export async function activate(context: vscode.ExtensionContext) {
-  if (!findFrappeBenchDir()) {
-    debugMsg("Frappe Bench Directory not found");
-    return;
-  }
+let client: LanguageClient;
 
-  if (vscode.window.activeTextEditor) {
-    // try and get doctype json for active editor
-    getDocTypeJSON(vscode.window.activeTextEditor.document);
-  }
-
-  context.subscriptions.push(
-    vscode.window.onDidChangeActiveTextEditor((editor) => {
-      if (editor) {
-        // try and get doctype json when active editor changes
-        getDocTypeJSON(editor.document);
-      }
-    })
-  );
-
-  setupDiagnostics(context);
-  setupAutocomplete(context);
-  setupHover(context);
-  setupDefinition(context);
+function getClientOptions(): LanguageClientOptions {
+  return {
+    // Register the server for plain text documents
+    documentSelector: ["python"],
+    outputChannelName: "[pygls] FrappeLanguageServer",
+    synchronize: {
+      // Notify the server about file changes to '.clientrc files contain in the workspace
+      fileEvents: workspace.createFileSystemWatcher("**/.clientrc"),
+    },
+  };
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+function isStartedInDebugMode(): boolean {
+  return process.env.VSCODE_DEBUG_MODE === "true";
+}
+
+function startLangServerTCP(addr: number): LanguageClient {
+  const serverOptions: ServerOptions = () => {
+    return new Promise((resolve, reject) => {
+      const clientSocket = new net.Socket();
+      clientSocket.connect(addr, "127.0.0.1", () => {
+        resolve({
+          reader: clientSocket,
+          writer: clientSocket,
+        });
+      });
+    });
+  };
+
+  return new LanguageClient(
+    `tcp lang server (port ${addr})`,
+    serverOptions,
+    getClientOptions()
+  );
+}
+
+function startLangServer(
+  command: string,
+  args: string[],
+  cwd: string
+): LanguageClient {
+  const serverOptions: ServerOptions = {
+    args,
+    command,
+    options: { cwd },
+  };
+
+  return new LanguageClient(command, serverOptions, getClientOptions());
+}
+
+export function activate(context: ExtensionContext) {
+  if (isStartedInDebugMode()) {
+    // Development - Run the server manually
+    client = startLangServerTCP(2087);
+  } else {
+    // Production - Client is going to run the server (for use within `.vsix` package)
+    const cwd = path.join(__dirname, "..", "..");
+    const pythonPath = workspace
+      .getConfiguration("python")
+      .get<string>("pythonPath");
+
+    if (!pythonPath) {
+      throw new Error("`python.pythonPath` is not set");
+    }
+
+    client = startLangServer(pythonPath, ["-m", "server"], cwd);
+  }
+
+  context.subscriptions.push(client.start());
+}
+
+export function deactivate(): Thenable<void> {
+  return client ? client.stop() : Promise.resolve();
+}
