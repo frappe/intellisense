@@ -1,39 +1,32 @@
 import argparse
 import logging
 
-from .server import server
+from .server import frappe_server
 
-logging.basicConfig(filename="pygls.log", level=logging.DEBUG, filemode="w")
+logging.basicConfig(filename="frappe-ls.log", level=logging.DEBUG, filemode="w")
 
 
 def add_arguments(parser):
-    parser.description = "simple json server example"
+	parser.description = "Frappe Language Server"
 
-    parser.add_argument(
-        "--tcp", action="store_true",
-        help="Use TCP server instead of stdio"
-    )
-    parser.add_argument(
-        "--host", default="127.0.0.1",
-        help="Bind to this address"
-    )
-    parser.add_argument(
-        "--port", type=int, default=2087,
-        help="Bind to this port"
-    )
+	parser.add_argument(
+		"--tcp", action="store_true", help="Use TCP server instead of stdio"
+	)
+	parser.add_argument("--host", default="127.0.0.1", help="Bind to this address")
+	parser.add_argument("--port", type=int, default=2087, help="Bind to this port")
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    add_arguments(parser)
-    args = parser.parse_args()
+	parser = argparse.ArgumentParser()
+	add_arguments(parser)
+	args = parser.parse_args()
 
-    if args.tcp:
-        print(f'starting server at {args.port}')
-        server.start_tcp(args.host, args.port)
-    else:
-        server.start_io()
+	if args.tcp:
+		print(f"starting server at {args.port}")
+		frappe_server.start_tcp(args.host, args.port)
+	else:
+		frappe_server.start_io()
 
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+	main()

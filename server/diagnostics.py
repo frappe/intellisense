@@ -1,5 +1,4 @@
 import re
-import sys
 
 from pygls.types import Diagnostic, Position, Range
 

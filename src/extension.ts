@@ -12,8 +12,8 @@ let client: LanguageClient;
 function getClientOptions(): LanguageClientOptions {
   return {
     // Register the server for plain text documents
-    documentSelector: ["python"],
-    outputChannelName: "[pygls] FrappeLanguageServer",
+    documentSelector: ["python", "plaintext"],
+    outputChannelName: "Frappe Language Server",
     synchronize: {
       // Notify the server about file changes to '.clientrc files contain in the workspace
       fileEvents: workspace.createFileSystemWatcher("**/.clientrc"),

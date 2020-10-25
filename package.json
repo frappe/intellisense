@@ -12,6 +12,7 @@
   ],
   "activationEvents": [
     "onLanguage:python",
+    "onLanguage:plaintext",
     "onDebugResolve:python"
   ],
   "main": "./out/extension.js",
@@ -29,32 +30,8 @@
     },
     "commands": [
       {
-        "command": "countDownBlocking",
-        "title": "Count down 10 seconds [Blocking]"
-      },
-      {
-        "command": "countDownNonBlocking",
-        "title": "Count down 10 seconds [Non Blocking]"
-      },
-      {
-        "command": "registerCompletions",
-        "title": "Register completions"
-      },
-      {
-        "command": "showConfigurationAsync",
-        "title": "Show Json Example Configuration [Async]"
-      },
-      {
-        "command": "showConfigurationCallback",
-        "title": "Show Json Example Configuration [Callback]"
-      },
-      {
-        "command": "showConfigurationThread",
-        "title": "Show Json Example Configuration [Thread]"
-      },
-      {
-        "command": "unregisterCompletions",
-        "title": "Unregister completions"
+        "command": "setupFrappeIntellisense",
+        "title": "Setup Frappe Intellisense in this workspace"
       }
     ]
   },

@@ -1,20 +1,21 @@
 import os
 
-frappe_bench_dir = None
 
+def guess_doctype(document):
+	from .server import get_config
 
-def find_frappe_bench_dir(ls=None):
-	global frappe_bench_dir
+	py_path = document.path
+	if not py_path.endswith(".py"):
+		return
 
-	if not frappe_bench_dir and ls:
-		current_dir = ls.workspace.root_path
-		while True:
-			dirs = [d for d in os.listdir(current_dir)]
-			if set(["apps", "sites", "Procfile"]).issubset(set(dirs)):
-				frappe_bench_dir = current_dir
-				ls.show_message(f"Frappe Bench Directory found at {frappe_bench_dir}")
-				break
-			else:
-				current_dir = os.path.abspath(os.path.join(current_dir, ".."))
+	config = get_config()
+	doctypes = config.get("doctypes")
+	doctype_paths = doctypes.values()
+	document_folder = os.path.abspath(os.path.join(py_path, ".."))
 
-	return frappe_bench_dir
+	if document_folder in doctype_paths:
+		folder_name = os.path.basename(document_folder)
+		py_name = os.path.basename(py_path)
+		if (folder_name + ".py") == py_name:
+			doctype = list(doctypes.keys())[list(doctypes.values()).index(document_folder)]
+			return doctype
