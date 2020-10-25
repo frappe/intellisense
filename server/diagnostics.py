@@ -4,8 +4,6 @@ from pygls.types import Diagnostic, Position, Range
 
 
 def get_translation_diagnostics(ls, params):
-	ls.show_message_log("Validating translations...")
-
 	document = ls.workspace.get_document(params.textDocument.uri)
 
 	pattern = re.compile(
@@ -62,7 +60,7 @@ def get_translation_diagnostics(ls, params):
 						Position(line_number, first_non_white_space_character_index),
 						Position(line_number, last_character_index),
 					),
-					"Translation syntax error at line number",
+					"Translation syntax error",
 					source=source,
 				)
 				diagnostics.append(d)
