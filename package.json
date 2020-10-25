@@ -1,7 +1,7 @@
 {
   "name": "frappe-intellisense",
   "displayName": "Frappe Framework Intellisense",
-  "description": "Intellisense and Snippets for Frappe Framework",
+  "description": "Intellisense and Autocompletion for Frappe Framework",
   "version": "0.0.1",
   "publisher": "netchampfaris",
   "engines": {
@@ -10,6 +10,7 @@
   "repository": {
     "url": "https://github.com/netchampfaris/frappe-intellisense"
   },
+  "license": "MIT",
   "categories": [
     "Other"
   ],
