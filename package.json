@@ -7,6 +7,9 @@
   "engines": {
     "vscode": "^1.50.0"
   },
+  "repository": {
+    "url": "https://github.com/netchampfaris/frappe-intellisense"
+  },
   "categories": [
     "Other"
   ],
@@ -37,7 +40,7 @@
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
-    "compile": "tsc -p ./ && cp src/*.py out",
+    "compile": "tsc -p ./",
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
