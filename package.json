@@ -15,6 +15,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onLanguage:javascript",
     "onLanguage:python",
     "onLanguage:plaintext",
     "onDebugResolve:python"

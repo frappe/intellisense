@@ -1,4 +1,5 @@
 import os
+import re
 from pygls.types import (
 	Location,
 	Position,
@@ -15,11 +16,18 @@ def get_definitions(ls: FrappeLanguageServer, params: TextDocumentPositionParams
 	if document.path.endswith("patches.txt"):
 		return get_method_definition_for_patch(ls, params)
 
+	# module path strings like "frappe.frappe.core.doctype.todo.todo"
+	line = document.lines[params.position.line]
+	module_path_pattern = r"(['\"])(\w+(\.\w+)+)\1"
+	match = re.search(module_path_pattern, line)
+	if match:
+		module_path = match.group(2)
+		return get_location_from_module_path(ls, module_path)
+
 
 def get_method_definition_for_patch(
 	ls: FrappeLanguageServer, params: TextDocumentPositionParams
 ):
-	config = get_config()
 	document = ls.workspace.get_document(params.textDocument.uri)
 	line = document.lines[params.position.line]
 	# remove new line and whitespaces
@@ -30,20 +38,32 @@ def get_method_definition_for_patch(
 	if line.startswith("execute:"):
 		return
 
-	module_path = line.replace(".", "/")
+	line = f"{line}.execute"
+	return get_location_from_module_path(ls, line)
+
+
+def get_location_from_module_path(ls, module_path):
+	config = get_config()
+	module_path, method = module_path.rsplit(".", 1)
+
+	module_path = module_path.replace(".", "/")
 	app_name = module_path.split("/", 1)[0]
 	file_path = os.path.join(
 		config.frappe_bench_dir, "apps", app_name, module_path + ".py"
 	)
-	uri = from_fs_path(file_path)
+	if not os.path.exists(file_path):
+		return
 
+	uri = from_fs_path(file_path)
 	target_document = ls.workspace.get_document(uri)
 
 	line_number = 0
 	for line in target_document.lines:
-		if "def execute():" in line:
+		if f"def {method}(" in line:
 			break
 		line_number += 1
 
-	link = Location(uri, Range(Position(line_number, 0), Position(line_number, 10)))
+	link = Location(
+		uri, Range(Position(line_number, 0), Position(line_number, len(method) + 4))
+	)
 	return link
