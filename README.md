@@ -5,30 +5,17 @@ intellisense in Frappe projects.
 
 ## Installation
 
-1. Make sure your default `python` executable is version 3
+1. Make sure your `frappe-bench` directory is on Python 3.
 
    ```sh
-   python --version
+   cd frappe-bench
+   ./env/bin/python --version
    Python 3.7.7
    ```
 
-   If you have a different path for your Python 3 binary, set the path in your
-   VSCode workspace settings. For e.g.,
-
-   ```
-    {
-        "python.pythonPath": "~/.pyenv/versions/3.7.7/bin/python"
-    }
-   ```
-
-1. Install [pygls](https://github.com/openlawlibrary/pygls) and
-   [jedi](https://github.com/davidhalter/jedi) by running the following command:
-
-   ```sh
-   pip install pygls jedi
-   ```
-
-1. Install this extension from Marketplace
+2. Install this extension from
+   [Marketplace](https://marketplace.visualstudio.com/items?itemName=netchampfaris.frappe-intellisense).
+   The extension will download the required dependencies automatically.
 
 
 ## Features
