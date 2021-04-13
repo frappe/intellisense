@@ -2,7 +2,7 @@
   "name": "frappe-intellisense",
   "displayName": "Frappe Framework Intellisense",
   "description": "Intellisense and Autocompletion for Frappe Framework",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "netchampfaris",
   "engines": {
     "vscode": "^1.50.0"
