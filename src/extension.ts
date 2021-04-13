@@ -128,8 +128,9 @@ async function checkDependencies(frappeBenchDir: string) {
             title: "Installing dependencies...",
           },
           async () => {
+            let command = "bench pip install jedi==0.17.2 pygls==0.10.2";
             try {
-              await exec("bench pip install jedi pygls", {
+              await exec(command, {
                 cwd: frappeBenchDir,
               });
               vscode.window.showInformationMessage(
@@ -137,7 +138,7 @@ async function checkDependencies(frappeBenchDir: string) {
               );
             } catch (error) {
               vscode.window.showInformationMessage(
-                "[Frappe Language Server] Could not install dependencies. Install it manually using 'bench pip install pygls jedi'"
+                `[Frappe Language Server] Could not install dependencies. Install it manually using '${command}'`
               );
               throw new Error("Could not install dependencies");
             }

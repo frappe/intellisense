@@ -1,6 +1,6 @@
 import os
 import re
-from pygls.types import (
+from pygls.lsp.types import (
 	Location,
 	Position,
 	Range,
@@ -11,7 +11,7 @@ from .server import FrappeLanguageServer, get_config
 
 
 def get_definitions(ls: FrappeLanguageServer, params: TextDocumentPositionParams):
-	document = ls.workspace.get_document(params.textDocument.uri)
+	document = ls.workspace.get_document(params.text_document.uri)
 
 	if document.path.endswith("patches.txt"):
 		return get_method_definition_for_patch(ls, params)
@@ -28,7 +28,7 @@ def get_definitions(ls: FrappeLanguageServer, params: TextDocumentPositionParams
 def get_method_definition_for_patch(
 	ls: FrappeLanguageServer, params: TextDocumentPositionParams
 ):
-	document = ls.workspace.get_document(params.textDocument.uri)
+	document = ls.workspace.get_document(params.text_document.uri)
 	line = document.lines[params.position.line]
 	# remove new line and whitespaces
 	line = line.strip()
@@ -63,7 +63,9 @@ def get_location_from_module_path(ls, module_path):
 			break
 		line_number += 1
 
-	link = Location(
-		uri, Range(Position(line_number, 0), Position(line_number, len(method) + 4))
+	range = Range(
+		start=Position(line=line_number, character=0),
+		end=Position(line=line_number, character=len(method) + 4),
 	)
+	link = Location(uri=uri, range=range)
 	return link

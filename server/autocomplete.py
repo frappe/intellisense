@@ -2,7 +2,7 @@ import re
 from .server import get_config
 from pygls.workspace import Document
 import jedi
-from pygls.types import (
+from pygls.lsp.types import (
 	CompletionParams,
 	Position,
 )
@@ -11,8 +11,8 @@ from .utils import guess_doctype
 
 def get_document_autocompletion_items(ls, params: CompletionParams):
 	config = get_config()
-	document: Document = ls.workspace.get_document(params.textDocument.uri)
-	position_before_dot = Position(params.position.line, params.position.character - 1)
+	document: Document = ls.workspace.get_document(params.text_document.uri)
+	position_before_dot = Position(line=params.position.line, character=params.position.character - 1)
 	word_before_dot = document.word_at_position(position_before_dot)
 
 	# autocomplete "self." in class controllers

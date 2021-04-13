@@ -63,7 +63,7 @@
 				"--tcp"
 			],
 			"justMyCode": false,
-			"pythonPath": "/Users/farisansari/Projects/benches/frappe-bench/env/bin/python",
+			"python": "/Users/farisansari/Projects/benches/frappe-bench/env/bin/python",
 			"cwd": "${workspaceFolder}",
 			"env": {
 				"PYTHONPATH": "${workspaceFolder}"

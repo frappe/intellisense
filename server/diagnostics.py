@@ -1,10 +1,10 @@
 import re
 
-from pygls.types import Diagnostic, Position, Range
+from pygls.lsp.types import Diagnostic, Position, Range
 
 
 def get_translation_diagnostics(ls, params):
-	document = ls.workspace.get_document(params.textDocument.uri)
+	document = ls.workspace.get_document(params.text_document.uri)
 
 	pattern = re.compile(
 		r"_\(([\"']{,3})(?P<message>((?!\1).)*)\1(\s*,\s*context\s*=\s*([\"'])(?P<py_context>((?!\5).)*)\5)*(\s*,\s*(.)*?\s*(,\s*([\"'])(?P<js_context>((?!\11).)*)\11)*)*\)"
@@ -32,11 +32,11 @@ def get_translation_diagnostics(ls, params):
 				has_f_string = f_string_pattern.search(line)
 				if has_f_string:
 					d = Diagnostic(
-						Range(
-							Position(line_number, first_non_white_space_character_index),
-							Position(line_number, last_character_index),
+						range=Range(
+							Position(line=line_number, character=first_non_white_space_character_index),
+							Position(line=line_number, character=last_character_index),
 						),
-						"F-strings are not supported for translations",
+						message="F-strings are not supported for translations",
 						source=source,
 					)
 					diagnostics.append(d)
@@ -56,11 +56,11 @@ def get_translation_diagnostics(ls, params):
 			if not match:
 				error_found = True
 				d = Diagnostic(
-					Range(
-						Position(line_number, first_non_white_space_character_index),
-						Position(line_number, last_character_index),
+					range=Range(
+						Position(line=line_number, character=first_non_white_space_character_index),
+						Position(line=line_number, character=last_character_index),
 					),
-					"Translation syntax error",
+					message="Translation syntax error",
 					source=source,
 				)
 				diagnostics.append(d)
@@ -68,11 +68,11 @@ def get_translation_diagnostics(ls, params):
 			if not error_found and not words_pattern.search(line):
 				error_found = True
 				d = Diagnostic(
-					Range(
-						Position(line_number, first_non_white_space_character_index),
-						Position(line_number, last_character_index),
+					range=Range(
+						start=Position(line=line_number, character=first_non_white_space_character_index),
+						end=Position(line=line_number, character=last_character_index),
 					),
-					"Translation is useless because it has no words",
+					message="Translation is useless because it has no words",
 					source=source,
 				)
 				diagnostics.append(d)

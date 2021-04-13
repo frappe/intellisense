@@ -3,7 +3,7 @@ import sys
 import json
 import glob
 from jedi.api.environment import Environment
-from pygls.types import DidSaveTextDocumentParams
+from pygls.lsp.types import DidSaveTextDocumentParams
 from .doctype_intellisense import DocTypeIntellisense
 
 
@@ -51,7 +51,7 @@ class IntellisenseConfig:
 	def update_doctype_intellisense(self, params: DidSaveTextDocumentParams):
 		from .utils import guess_doctype
 
-		document = self.ls.workspace.get_document(params.textDocument.uri)
+		document = self.ls.workspace.get_document(params.text_document.uri)
 		doctype = guess_doctype(document)
 		if doctype:
 			self.doctype_intellisense(doctype).build_jedi_completions(force=True)

@@ -1,7 +1,7 @@
 import os
 import jedi
 from jedi.api.classes import Completion
-from pygls.types import (
+from pygls.lsp.types import (
 	CompletionItem,
 	CompletionItemKind,
 	CompletionList,
@@ -45,7 +45,7 @@ class DocTypeIntellisense:
 					continue
 				items.append(lsp_completion_item(completion, self.module_name))
 
-		return CompletionList(False, items)
+		return CompletionList(is_incomplete=False, items=items)
 
 	def build_fields(self):
 		self.fields = []

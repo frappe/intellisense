@@ -1,11 +1,12 @@
-from pygls.features import (
+from pygls.lsp.methods import (
 	COMPLETION,
 	DEFINITION,
 	TEXT_DOCUMENT_DID_OPEN,
 	TEXT_DOCUMENT_DID_SAVE,
 )
+from pygls.lsp.types.language_features.completion import CompletionOptions
 from pygls.server import LanguageServer
-from pygls.types import (
+from pygls.lsp.types import (
 	CompletionParams,
 	DidOpenTextDocumentParams,
 	DidSaveTextDocumentParams,
@@ -30,7 +31,7 @@ def setup_frappe_intellisense(ls: FrappeLanguageServer, *args):
 	config.setup(ls)
 
 
-@frappe_server.feature(COMPLETION, trigger_characters=["."])
+@frappe_server.feature(COMPLETION, CompletionOptions(trigger_characters=["."]))
 def completions(ls: FrappeLanguageServer, params: CompletionParams = None):
 	"""Returns completion items."""
 	from .autocomplete import get_document_autocompletion_items
@@ -87,7 +88,7 @@ def send_diagnostics(ls, params):
 	from .diagnostics import get_translation_diagnostics
 
 	diagnostics = get_translation_diagnostics(ls, params)
-	ls.publish_diagnostics(params.textDocument.uri, diagnostics)
+	ls.publish_diagnostics(params.text_document.uri, diagnostics)
 
 
 def get_config():
